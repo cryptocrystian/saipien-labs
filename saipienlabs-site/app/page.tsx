@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import HeaderNav from '@/components/HeaderNav';
-import HeroSection from '@/components/HeroSection';
+import HeroShipConsole from '@/components/hero/HeroShipConsole';
 import StudioSection from '@/components/StudioSection';
 import ValueProps from '@/components/ValueProps';
 import PricingGrid from '@/components/PricingGrid';
@@ -23,7 +23,7 @@ export default function Home() {
     <>
       <HeaderNav onOpenContact={openContactModal} />
       <main>
-        <HeroSection onOpenContact={openContactModal} />
+        <HeroShipConsole onOpenContact={openContactModal} />
         <StudioSection />
         <section id="services">
           <ValueProps />
