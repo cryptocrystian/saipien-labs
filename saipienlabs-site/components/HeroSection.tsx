@@ -1,3 +1,8 @@
+'use client';
+
+import { motion } from 'framer-motion';
+import AnimatedPipeline from './AnimatedPipeline';
+
 interface HeroSectionProps {
   onOpenContact: () => void;
 }
@@ -23,17 +28,43 @@ export default function HeroSection({ onOpenContact }: HeroSectionProps) {
           {/* Left: Copy */}
           <div className="space-y-8">
             <h1 className="text-5xl lg:text-6xl xl:text-7xl font-bold leading-tight text-mist">
-              Build real software,{' '}
-              <span className="text-aurora">really fast.</span>
+              Build{' '}
+              <motion.span
+                className="inline-block"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2, duration: 0.6 }}
+              >
+                real
+              </motion.span>{' '}
+              software,{' '}
+              <motion.span
+                className="text-aurora inline-block"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.5, duration: 0.8, ease: "easeOut" }}
+              >
+                really fast.
+              </motion.span>
             </h1>
 
-            <p className="text-xl lg:text-2xl text-mist/80 leading-relaxed max-w-2xl">
+            <motion.p
+              className="text-xl lg:text-2xl text-mist/80 leading-relaxed max-w-2xl"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.8, duration: 0.6 }}
+            >
               AI-accelerated dev pods that ship production in weeks — with enterprise discipline,
               security controls, and budget guardrails.
-            </p>
+            </motion.p>
 
             {/* CTAs */}
-            <div className="flex flex-col sm:flex-row gap-4 pt-4">
+            <motion.div
+              className="flex flex-col sm:flex-row gap-4 pt-4"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 1.0, duration: 0.6 }}
+            >
               <button
                 onClick={onOpenContact}
                 className="bg-aurora text-white px-8 py-4 rounded-2xl font-semibold text-lg hover:scale-105 transition-transform duration-200 text-center focus:outline-none focus:ring-2 focus:ring-accentBlue focus:ring-offset-2 focus:ring-offset-obsidian"
@@ -41,15 +72,20 @@ export default function HeroSection({ onOpenContact }: HeroSectionProps) {
                 Book Feasibility Readout
               </button>
               <a
-                href="#timeline"
+                href="/mvp-plan"
                 className="border-2 border-mist/20 text-mist px-8 py-4 rounded-2xl font-semibold text-lg hover:border-mist/40 transition-colors duration-200 text-center"
               >
                 See the 90-Day MVP Plan
               </a>
-            </div>
+            </motion.div>
 
             {/* Proof chips */}
-            <div className="flex flex-wrap gap-4 pt-6">
+            <motion.div
+              className="flex flex-wrap gap-4 pt-6"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 1.2, duration: 0.8 }}
+            >
               <div className="px-4 py-2 rounded-full border border-accentTeal/30 bg-slate/40 backdrop-blur-sm">
                 <span className="font-mono text-sm text-mist">2–4× faster cycle time</span>
               </div>
@@ -59,50 +95,18 @@ export default function HeroSection({ onOpenContact }: HeroSectionProps) {
               <div className="px-4 py-2 rounded-full border border-accentViolet/30 bg-slate/40 backdrop-blur-sm">
                 <span className="font-mono text-sm text-mist">Quality gates: tests, security, AI evals</span>
               </div>
-            </div>
+            </motion.div>
           </div>
 
-          {/* Right: Pod Dashboard Mock */}
-          <div className="relative lg:block hidden">
-            <div className="bg-slate border-t-2 border-aurora rounded-xl p-6 shadow-2xl backdrop-blur-sm">
-              <div className="space-y-4">
-                <div className="flex items-center justify-between pb-3 border-b border-mist/10">
-                  <h3 className="font-mono text-sm text-mist/60">POD DASHBOARD</h3>
-                  <div className="flex items-center gap-2">
-                    <span className="font-mono text-xs px-2 py-1 rounded-full bg-accentTeal/20 text-accentTeal border border-accentTeal/30">[healthy]</span>
-                  </div>
-                </div>
-
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <span className="font-mono text-xs text-mist/50">last deploy:</span>
-                    <span className="font-mono text-sm text-accentTeal">14m ago</span>
-                  </div>
-
-                  <div className="flex items-center justify-between">
-                    <span className="font-mono text-xs text-mist/50">eval score:</span>
-                    <span className="font-mono text-sm text-accentBlue">92.4</span>
-                  </div>
-
-                  <div className="flex items-center justify-between">
-                    <span className="font-mono text-xs text-mist/50">spend cap:</span>
-                    <span className="font-mono text-sm text-accentViolet">$0.13 / conv</span>
-                  </div>
-
-                  <div className="flex items-center justify-between">
-                    <span className="font-mono text-xs text-mist/50">latency p95:</span>
-                    <span className="font-mono text-sm text-mist">242ms</span>
-                  </div>
-                </div>
-
-                <div className="pt-3 mt-3 border-t border-mist/10">
-                  <div className="text-xs font-mono text-mist/40">
-                    // real-time observability + controls
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          {/* Right: Animated Pipeline */}
+          <motion.div
+            className="relative lg:block hidden"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.6, duration: 0.8, ease: "easeOut" }}
+          >
+            <AnimatedPipeline />
+          </motion.div>
         </div>
       </div>
     </section>
