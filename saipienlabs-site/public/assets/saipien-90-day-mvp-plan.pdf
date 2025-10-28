@@ -1,0 +1,219 @@
+%PDF-1.4
+1 0 obj
+<<
+/Type /Catalog
+/Pages 2 0 R
+>>
+endobj
+
+2 0 obj
+<<
+/Type /Pages
+/Kids [3 0 R 4 0 R]
+/Count 2
+>>
+endobj
+
+3 0 obj
+<<
+/Type /Page
+/Parent 2 0 R
+/Resources <<
+/Font <<
+/F1 5 0 R
+/F2 6 0 R
+>>
+>>
+/MediaBox [0 0 612 792]
+/Contents 7 0 R
+>>
+endobj
+
+4 0 obj
+<<
+/Type /Page
+/Parent 2 0 R
+/Resources <<
+/Font <<
+/F1 5 0 R
+/F2 6 0 R
+>>
+>>
+/MediaBox [0 0 612 792]
+/Contents 8 0 R
+>>
+endobj
+
+5 0 obj
+<<
+/Type /Font
+/Subtype /Type1
+/BaseFont /Helvetica-Bold
+>>
+endobj
+
+6 0 obj
+<<
+/Type /Font
+/Subtype /Type1
+/BaseFont /Helvetica
+>>
+endobj
+
+7 0 obj
+<<
+/Length 600
+>>
+stream
+BT
+/F1 36 Tf
+100 650 Td
+(Your MVP in 90 Days) Tj
+ET
+
+BT
+/F2 14 Tf
+100 600 Td
+(How Saipien [LABS] designs, ships, integrates, hardens,) Tj
+0 -20 Td
+(and hands off production AI systems.) Tj
+ET
+
+BT
+/F2 12 Tf
+100 530 Td
+(Integration-first. Governed. Budget-capped.) Tj
+ET
+
+BT
+/F2 10 Tf
+150 100 Td
+(saipien [labs] - AI dev pod . integration-first . governed) Tj
+ET
+endstream
+endobj
+
+8 0 obj
+<<
+/Length 1200
+>>
+stream
+BT
+/F1 16 Tf
+100 730 Td
+(The 4-Phase Timeline) Tj
+ET
+
+BT
+/F1 12 Tf
+100 690 Td
+(Phase 1 - Day 0-10: Discovery & Prototype) Tj
+ET
+BT
+/F2 10 Tf
+100 670 Td
+(Output: Clickable prototype, KPI baseline, acceptance criteria) Tj
+0 -15 Td
+(Risk removed: Stakeholders aligned on value and scope) Tj
+ET
+
+BT
+/F1 12 Tf
+100 620 Td
+(Phase 2 - Day 11-30: Core Build v1) Tj
+ET
+BT
+/F2 10 Tf
+100 600 Td
+(Output: Critical path flows end-to-end, instrumentation) Tj
+0 -15 Td
+(Risk removed: "It works" isn't theoretical anymore) Tj
+ET
+
+BT
+/F1 12 Tf
+100 550 Td
+(Phase 3 - Day 31-60: Integrations & Hardening) Tj
+ET
+BT
+/F2 10 Tf
+100 530 Td
+(Output: CRM integration, tests, rollback, budget caps) Tj
+0 -15 Td
+(Risk removed: Legal, Security, Ops don't block go-live) Tj
+ET
+
+BT
+/F1 12 Tf
+100 480 Td
+(Phase 4 - Day 61-90: Beta & Launch) Tj
+ET
+BT
+/F2 10 Tf
+100 460 Td
+(Output: Beta live, security review, handoff runbook) Tj
+0 -15 Td
+(Risk removed: Execs can say "Ship it") Tj
+ET
+
+BT
+/F1 12 Tf
+100 400 Td
+(What We Need From You) Tj
+ET
+BT
+/F2 10 Tf
+100 380 Td
+(- Access to systems \(CRM, ticketing, knowledge base\)) Tj
+0 -15 Td
+(- 1-2 stakeholders to confirm solution) Tj
+0 -15 Td
+(- Agreement on success KPI) Tj
+0 -15 Td
+(- Named data/security contact) Tj
+ET
+
+BT
+/F1 12 Tf
+100 290 Td
+(What You Get) Tj
+ET
+BT
+/F2 10 Tf
+100 270 Td
+(- Working production candidate \(not slides\)) Tj
+0 -15 Td
+(- Runbook your team can operate) Tj
+0 -15 Td
+(- Cost controls and eval loops in-place) Tj
+0 -15 Td
+(- Partner for Managed Run continuity) Tj
+ET
+
+BT
+/F2 9 Tf
+150 100 Td
+(saipien [labs] - AI dev pod . integration-first . governed) Tj
+ET
+endstream
+endobj
+
+xref
+0 9
+0000000000 65535 f
+0000000009 00000 n
+0000000058 00000 n
+0000000115 00000 n
+0000000252 00000 n
+0000000389 00000 n
+0000000467 00000 n
+0000000541 00000 n
+0000001193 00000 n
+trailer
+<<
+/Size 9
+/Root 1 0 R
+>>
+startxref
+2447
+%%EOF

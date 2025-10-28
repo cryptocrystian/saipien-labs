@@ -14,6 +14,7 @@ export default function ContactModal({ isOpen, onClose }: ContactModalProps) {
     company: '',
     goal: ''
   });
+  const [submitted, setSubmitted] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,11 +33,17 @@ ${formData.goal}
     const mailtoLink = `mailto:hello@saipienlabs.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
     window.location.href = mailtoLink;
 
-    // Close modal
-    onClose();
+    // Show thank you screen
+    setSubmitted(true);
+  };
 
-    // Reset form
-    setFormData({ name: '', email: '', company: '', goal: '' });
+  const handleClose = () => {
+    onClose();
+    // Reset state after modal animation
+    setTimeout(() => {
+      setSubmitted(false);
+      setFormData({ name: '', email: '', company: '', goal: '' });
+    }, 300);
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -51,7 +58,7 @@ ${formData.goal}
   return (
     <div
       className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-obsidian/90 backdrop-blur-sm"
-      onClick={onClose}
+      onClick={handleClose}
     >
       <div
         className="bg-slate border border-mist/10 rounded-2xl p-8 max-w-lg w-full shadow-2xl relative"
@@ -59,7 +66,7 @@ ${formData.goal}
       >
         {/* Close button */}
         <button
-          onClick={onClose}
+          onClick={handleClose}
           className="absolute top-4 right-4 text-mist/60 hover:text-mist transition-colors"
           aria-label="Close modal"
         >
@@ -68,18 +75,79 @@ ${formData.goal}
           </svg>
         </button>
 
-        {/* Header */}
-        <div className="mb-6">
-          <h2 className="text-2xl font-bold text-mist mb-2">
-            Book Feasibility Readout
-          </h2>
-          <p className="text-sm text-mist/70">
-            Free 45-minute working session. We map ROI, integration points, and "done" criteria.
-          </p>
-        </div>
+        {submitted ? (
+          /* Thank You Screen */
+          <div className="text-center py-4">
+            {/* Success icon */}
+            <div className="mb-6">
+              <div className="w-16 h-16 bg-accentTeal/20 rounded-full flex items-center justify-center mx-auto">
+                <svg className="w-8 h-8 text-accentTeal" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+            </div>
 
-        {/* Form */}
-        <form onSubmit={handleSubmit} className="space-y-4">
+            <h2 className="text-2xl font-bold text-mist mb-3">
+              Request Sent!
+            </h2>
+            <p className="text-mist/70 mb-6">
+              Your email client should have opened. We'll get back to you within 1 business day.
+            </p>
+
+            {/* MVP Plan CTA */}
+            <div className="bg-graphite border border-accentTeal/30 rounded-xl p-6 mb-6">
+              <h3 className="font-semibold text-mist mb-2">
+                While you wait, see how we work:
+              </h3>
+              <p className="text-sm text-mist/70 mb-4">
+                Download our 90-day MVP plan to understand our integration-first approach.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-3">
+                <a
+                  href="/assets/saipien-90-day-mvp-plan.pdf"
+                  download
+                  className="flex-1 inline-flex items-center justify-center gap-2 bg-aurora text-obsidian font-semibold px-4 py-3 rounded-lg hover:opacity-90 transition-opacity"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                  Download PDF
+                </a>
+                <a
+                  href="/mvp-plan"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-1 inline-flex items-center justify-center gap-2 bg-slate border border-mist/20 text-mist font-semibold px-4 py-3 rounded-lg hover:bg-graphite transition-colors"
+                >
+                  View Online
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                  </svg>
+                </a>
+              </div>
+            </div>
+
+            <button
+              onClick={handleClose}
+              className="text-sm text-mist/60 hover:text-mist transition-colors"
+            >
+              Close
+            </button>
+          </div>
+        ) : (
+          /* Form */
+          <>
+            {/* Header */}
+            <div className="mb-6">
+              <h2 className="text-2xl font-bold text-mist mb-2">
+                Book Feasibility Readout
+              </h2>
+              <p className="text-sm text-mist/70">
+                Free 45-minute working session. We map ROI, integration points, and "done" criteria.
+              </p>
+            </div>
+
+            <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label htmlFor="name" className="block text-sm font-medium text-mist mb-2">
               Name
@@ -149,14 +217,16 @@ ${formData.goal}
             We'll review and get back within 1 business day. No spam. NDA-friendly.
           </p>
 
-          {/* Submit button */}
-          <button
-            type="submit"
-            className="w-full bg-aurora text-white px-6 py-4 rounded-xl font-semibold hover:scale-105 transition-transform duration-200"
-          >
-            Send Request
-          </button>
-        </form>
+              {/* Submit button */}
+              <button
+                type="submit"
+                className="w-full bg-aurora text-white px-6 py-4 rounded-xl font-semibold hover:scale-105 transition-transform duration-200"
+              >
+                Send Request
+              </button>
+            </form>
+          </>
+        )}
       </div>
     </div>
   );

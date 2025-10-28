@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Your MVP in 90 Days – Saipien [LABS]</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    @page {
+      size: letter;
+      margin: 0;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #0B0F14;
+      color: #C7D2E0;
+      line-height: 1.6;
+    }
+
+    .mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .page {
+      width: 8.5in;
+      height: 11in;
+      padding: 0;
+      page-break-after: always;
+      position: relative;
+      background: #0B0F14;
+    }
+
+    .page:last-child {
+      page-break-after: auto;
+    }
+
+    /* Page 1: Cover */
+    .cover {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 2in 1in;
+      background: linear-gradient(135deg, #0B0F14 0%, #111821 100%);
+      border-top: 8px solid;
+      border-image: linear-gradient(90deg, #00BFA6 0%, #4C8DFF 50%, #8B5CF6 100%) 1;
+    }
+
+    .cover h1 {
+      font-size: 48pt;
+      font-weight: 700;
+      margin-bottom: 0.5in;
+      line-height: 1.2;
+    }
+
+    .cover .gradient-text {
+      background: linear-gradient(90deg, #00BFA6 0%, #4C8DFF 50%, #8B5CF6 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .cover .subtitle {
+      font-size: 16pt;
+      color: #C7D2E0;
+      opacity: 0.85;
+      max-width: 5in;
+      margin-bottom: 0.8in;
+      line-height: 1.5;
+    }
+
+    .cover .mono-block {
+      background: rgba(0, 191, 166, 0.1);
+      border: 1px solid rgba(0, 191, 166, 0.3);
+      border-radius: 8px;
+      padding: 0.3in 0.5in;
+      font-size: 11pt;
+      color: #00BFA6;
+      margin-bottom: 1.5in;
+    }
+
+    .cover .footer {
+      position: absolute;
+      bottom: 0.75in;
+      left: 0;
+      right: 0;
+      text-align: center;
+      font-size: 10pt;
+      color: #C7D2E0;
+      opacity: 0.6;
+    }
+
+    /* Page 2: Content */
+    .content-page {
+      padding: 0.75in 0.75in 0.5in 0.75in;
+      background: #0B0F14;
+    }
+
+    .section {
+      margin-bottom: 0.35in;
+    }
+
+    .section-title {
+      font-size: 18pt;
+      font-weight: 700;
+      margin-bottom: 0.25in;
+      text-align: center;
+      color: #C7D2E0;
+    }
+
+    .phase {
+      background: #1A2430;
+      border-left: 4px solid;
+      border-radius: 6px;
+      padding: 0.25in;
+      margin-bottom: 0.2in;
+      page-break-inside: avoid;
+    }
+
+    .phase-1 { border-color: #00BFA6; }
+    .phase-2 { border-color: #4C8DFF; }
+    .phase-3 { border-color: #8B5CF6; }
+    .phase-4 { border-color: #00BFA6; }
+
+    .phase-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 0.15in;
+    }
+
+    .phase-title {
+      font-size: 13pt;
+      font-weight: 700;
+      margin-bottom: 0.05in;
+    }
+
+    .phase-name {
+      font-size: 12pt;
+      font-weight: 600;
+      margin-bottom: 0.1in;
+    }
+
+    .phase-1 .phase-name { color: #00BFA6; }
+    .phase-2 .phase-name { color: #4C8DFF; }
+    .phase-3 .phase-name { color: #8B5CF6; }
+    .phase-4 .phase-name { color: #00BFA6; }
+
+    .status-pill {
+      font-size: 8pt;
+      padding: 0.04in 0.1in;
+      border-radius: 12px;
+      border: 1px solid;
+      white-space: nowrap;
+    }
+
+    .phase-1 .status-pill {
+      background: rgba(0, 191, 166, 0.15);
+      color: #00BFA6;
+      border-color: rgba(0, 191, 166, 0.3);
+    }
+
+    .phase-2 .status-pill {
+      background: rgba(76, 141, 255, 0.15);
+      color: #4C8DFF;
+      border-color: rgba(76, 141, 255, 0.3);
+    }
+
+    .phase-3 .status-pill {
+      background: rgba(139, 92, 246, 0.15);
+      color: #8B5CF6;
+      border-color: rgba(139, 92, 246, 0.3);
+    }
+
+    .phase-4 .status-pill {
+      background: rgba(0, 191, 166, 0.15);
+      color: #00BFA6;
+      border-color: rgba(0, 191, 166, 0.3);
+    }
+
+    .phase-body {
+      font-size: 9pt;
+      line-height: 1.5;
+    }
+
+    .phase-label {
+      font-weight: 600;
+      color: rgba(199, 210, 224, 0.85);
+      margin-bottom: 0.05in;
+    }
+
+    .phase-body ul {
+      margin-left: 0.15in;
+      margin-bottom: 0.1in;
+      color: rgba(199, 210, 224, 0.7);
+    }
+
+    .phase-body li {
+      margin-bottom: 0.03in;
+    }
+
+    .phase-body p {
+      color: rgba(199, 210, 224, 0.7);
+    }
+
+    .requirements-box {
+      background: #111821;
+      border: 1px solid #1A2430;
+      border-radius: 6px;
+      padding: 0.2in;
+      margin-bottom: 0.25in;
+      page-break-inside: avoid;
+    }
+
+    .requirements-title {
+      font-size: 13pt;
+      font-weight: 700;
+      margin-bottom: 0.12in;
+    }
+
+    .requirements-box ul {
+      list-style: none;
+      font-size: 9pt;
+      line-height: 1.6;
+    }
+
+    .requirements-box li {
+      margin-bottom: 0.08in;
+      padding-left: 0.15in;
+      position: relative;
+    }
+
+    .requirements-box li:before {
+      content: '→';
+      position: absolute;
+      left: 0;
+      color: #00BFA6;
+    }
+
+    .deliverables-box {
+      background: linear-gradient(135deg, #1A2430 0%, #111821 100%);
+      border-top: 2px solid;
+      border-image: linear-gradient(90deg, #00BFA6 0%, #4C8DFF 50%, #8B5CF6 100%) 1;
+      border-radius: 6px;
+      padding: 0.2in;
+      page-break-inside: avoid;
+    }
+
+    .deliverables-title {
+      font-size: 13pt;
+      font-weight: 700;
+      margin-bottom: 0.12in;
+    }
+
+    .deliverables-box ul {
+      list-style: none;
+      font-size: 9pt;
+      line-height: 1.6;
+    }
+
+    .deliverables-box li {
+      margin-bottom: 0.08in;
+      padding-left: 0.15in;
+      position: relative;
+    }
+
+    .deliverables-box li:before {
+      content: '✓';
+      position: absolute;
+      left: 0;
+      color: #00BFA6;
+    }
+
+    .page-footer {
+      position: absolute;
+      bottom: 0.4in;
+      left: 0.75in;
+      right: 0.75in;
+      text-align: center;
+      font-size: 8pt;
+      color: rgba(199, 210, 224, 0.5);
+      border-top: 1px solid rgba(199, 210, 224, 0.1);
+      padding-top: 0.1in;
+    }
+
+    @media print {
+      body {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Page 1: Cover -->
+  <div class="page cover">
+    <h1>
+      Your MVP in <span class="gradient-text">90 Days</span>
+    </h1>
+
+    <p class="subtitle">
+      How Saipien [LABS] designs, ships, integrates, hardens, and hands off production AI systems.
+    </p>
+
+    <div class="mono-block mono">
+      Integration-first. Governed. Budget-capped.
+    </div>
+
+    <div class="footer mono">
+      saipien [labs] — AI dev pod · integration-first · governed
+    </div>
+  </div>
+
+  <!-- Page 2: Content -->
+  <div class="page content-page">
+    <div class="section">
+      <h2 class="section-title">The 4-Phase Timeline</h2>
+
+      <!-- Phase 1 -->
+      <div class="phase phase-1">
+        <div class="phase-header">
+          <div>
+            <div class="phase-title">Phase 1 — Day 0–10</div>
+            <div class="phase-name">Discovery & Prototype</div>
+          </div>
+          <span class="status-pill mono">[scoped]</span>
+        </div>
+        <div class="phase-body">
+          <div class="phase-label">Output:</div>
+          <ul>
+            <li>Clickable prototype of the core workflow</li>
+            <li>KPI baseline and success criteria locked</li>
+            <li>Acceptance criteria for 'what done means'</li>
+          </ul>
+          <div class="phase-label">Risk removed:</div>
+          <p>Stakeholders aligned on value and scope</p>
+        </div>
+      </div>
+
+      <!-- Phase 2 -->
+      <div class="phase phase-2">
+        <div class="phase-header">
+          <div>
+            <div class="phase-title">Phase 2 — Day 11–30</div>
+            <div class="phase-name">Core Build v1</div>
+          </div>
+          <span class="status-pill mono">[prod-candidate]</span>
+        </div>
+        <div class="phase-body">
+          <div class="phase-label">Output:</div>
+          <ul>
+            <li>Critical path flows running end-to-end in a controlled sandbox</li>
+            <li>Early instrumentation and logging</li>
+          </ul>
+          <div class="phase-label">Risk removed:</div>
+          <p>"It works" isn't theoretical anymore</p>
+        </div>
+      </div>
+
+      <!-- Phase 3 -->
+      <div class="phase phase-3">
+        <div class="phase-header">
+          <div>
+            <div class="phase-title">Phase 3 — Day 31–60</div>
+            <div class="phase-name">Integrations & Hardening</div>
+          </div>
+          <span class="status-pill mono">[integrated]</span>
+        </div>
+        <div class="phase-body">
+          <div class="phase-label">Output:</div>
+          <ul>
+            <li>Integrated with your CRM / support / data layer</li>
+            <li>Tests, rollback plan, budget caps, eval loops</li>
+          </ul>
+          <div class="phase-label">Risk removed:</div>
+          <p>Legal, Security, and Ops don't block go-live</p>
+        </div>
+      </div>
+
+      <!-- Phase 4 -->
+      <div class="phase phase-4">
+        <div class="phase-header">
+          <div>
+            <div class="phase-title">Phase 4 — Day 61–90</div>
+            <div class="phase-name">Beta & Launch</div>
+          </div>
+          <span class="status-pill mono">[beta-ready]</span>
+        </div>
+        <div class="phase-body">
+          <div class="phase-label">Output:</div>
+          <ul>
+            <li>Beta in the real environment</li>
+            <li>Security review + performance tuning</li>
+            <li>Handoff runbook, on-call / monitoring plan</li>
+          </ul>
+          <div class="phase-label">Risk removed:</div>
+          <p>Execs can say "Ship it"</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- What We Need -->
+    <div class="section">
+      <div class="requirements-box">
+        <h3 class="requirements-title">What We Need From You</h3>
+        <ul>
+          <li>Access to relevant systems (CRM, ticketing, knowledge base, etc.)</li>
+          <li>1-2 internal stakeholders who can confirm "this solves the pain"</li>
+          <li>Agreement on the KPI that defines success (AHT, lead response, etc.)</li>
+          <li>A named data/security contact so we bake in governance early</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- What You Get -->
+    <div class="section">
+      <div class="deliverables-box">
+        <h3 class="deliverables-title">What You Get</h3>
+        <ul>
+          <li>A working production candidate (not slides)</li>
+          <li>A runbook your team can operate</li>
+          <li>Cost controls and eval loops in-place</li>
+          <li>A partner who stays on for Managed Run if you want continuity</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="page-footer mono">
+      saipien [labs] — AI dev pod · integration-first · governed
+    </div>
+  </div>
+</body>
+</html>
