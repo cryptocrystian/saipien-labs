@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import Link from "next/link";
+import HeaderNav from '@/components/HeaderNav';
 import ContactModal from '@/components/ContactModal';
 
 export default function SecureAIIntegrationPage() {
@@ -9,16 +9,9 @@ export default function SecureAIIntegrationPage() {
 
   return (
     <div className="min-h-screen bg-obsidian text-mist">
-      {/* Header */}
-      <header className="border-b border-slate">
-        <div className="max-w-4xl mx-auto px-6 py-8">
-          <Link href="/resources" className="text-sm text-mist/60 hover:text-accentTeal transition-colors font-mono">
-            ← Back to Resources
-          </Link>
-        </div>
-      </header>
+      <HeaderNav onOpenContact={() => setIsContactModalOpen(true)} />
 
-      <main className="max-w-4xl mx-auto px-6 py-16">
+      <main className="max-w-4xl mx-auto px-6 py-16 pt-32">
         {/* Title */}
         <h1 className="text-5xl font-bold mb-16">
           Shipping AI Without Getting Blocked by Legal or Security

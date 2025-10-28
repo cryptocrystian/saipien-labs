@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import Link from "next/link";
+import HeaderNav from '@/components/HeaderNav';
 import ContactModal from '@/components/ContactModal';
 
 export default function NinetyDayMVPsPage() {
@@ -9,16 +9,9 @@ export default function NinetyDayMVPsPage() {
 
   return (
     <div className="min-h-screen bg-obsidian text-mist">
-      {/* Header */}
-      <header className="border-b border-slate">
-        <div className="max-w-4xl mx-auto px-6 py-8">
-          <Link href="/resources" className="text-sm text-mist/60 hover:text-accentTeal transition-colors font-mono">
-            ← Back to Resources
-          </Link>
-        </div>
-      </header>
+      <HeaderNav onOpenContact={() => setIsContactModalOpen(true)} />
 
-      <main className="max-w-4xl mx-auto px-6 py-16">
+      <main className="max-w-4xl mx-auto px-6 py-16 pt-32">
         {/* Title */}
         <h1 className="text-5xl font-bold mb-16">
           Why 90-Day MVPs Work <span className="text-mist/60">(And When They Don't)</span>

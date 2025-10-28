@@ -1,7 +1,9 @@
 'use client';
 
-import type { Metadata } from "next";
+import { useState } from 'react';
 import Link from "next/link";
+import HeaderNav from '@/components/HeaderNav';
+import ContactModal from '@/components/ContactModal';
 
 const resources = [
   {
@@ -17,18 +19,13 @@ const resources = [
 ];
 
 export default function ResourcesPage() {
+  const [isContactModalOpen, setIsContactModalOpen] = useState(false);
+
   return (
     <div className="min-h-screen bg-obsidian text-mist">
-      {/* Header */}
-      <header className="border-b border-slate">
-        <div className="max-w-6xl mx-auto px-6 py-8">
-          <Link href="/" className="text-sm text-mist/60 hover:text-accentTeal transition-colors font-mono">
-            ← Back to home
-          </Link>
-        </div>
-      </header>
+      <HeaderNav onOpenContact={() => setIsContactModalOpen(true)} />
 
-      <main className="max-w-6xl mx-auto px-6 py-16">
+      <main className="max-w-6xl mx-auto px-6 py-16 pt-32">
         {/* Page Header */}
         <div className="mb-16">
           <h1 className="text-5xl font-bold mb-6">Resources</h1>
@@ -63,6 +60,11 @@ export default function ResourcesPage() {
           ))}
         </div>
       </main>
+
+      <ContactModal
+        isOpen={isContactModalOpen}
+        onClose={() => setIsContactModalOpen(false)}
+      />
     </div>
   );
 }

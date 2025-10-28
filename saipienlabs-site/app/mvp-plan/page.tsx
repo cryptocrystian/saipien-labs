@@ -1,23 +1,18 @@
-import type { Metadata } from "next";
+'use client';
 
-export const metadata: Metadata = {
-  title: "Your MVP in 90 Days – Saipien [LABS]",
-  description: "How Saipien Labs designs, ships, integrates, hardens, and hands off production AI systems in 90 days.",
-};
+import { useState } from 'react';
+import type { Metadata } from "next";
+import HeaderNav from '@/components/HeaderNav';
+import ContactModal from '@/components/ContactModal';
 
 export default function MvpPlanPage() {
+  const [isContactModalOpen, setIsContactModalOpen] = useState(false);
+
   return (
     <div className="min-h-screen bg-obsidian text-mist">
-      {/* Header */}
-      <header className="border-b border-slate">
-        <div className="max-w-4xl mx-auto px-6 py-8">
-          <a href="/" className="text-sm text-mist/60 hover:text-accentTeal transition-colors font-mono">
-            ← Back to home
-          </a>
-        </div>
-      </header>
+      <HeaderNav onOpenContact={() => setIsContactModalOpen(true)} />
 
-      <main className="max-w-4xl mx-auto px-6 py-16">
+      <main className="max-w-4xl mx-auto px-6 py-16 pt-32">
         {/* Cover Section */}
         <section className="mb-20">
           <div className="bg-gradient-to-r from-slate to-graphite border-t-2 border-aurora rounded-xl p-12 text-center">
@@ -232,6 +227,11 @@ export default function MvpPlanPage() {
           </div>
         </section>
       </main>
+
+      <ContactModal
+        isOpen={isContactModalOpen}
+        onClose={() => setIsContactModalOpen(false)}
+      />
     </div>
   );
 }

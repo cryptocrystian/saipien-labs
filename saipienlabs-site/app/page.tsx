@@ -3,11 +3,11 @@
 import { useState } from 'react';
 import HeaderNav from '@/components/HeaderNav';
 import HeroSection from '@/components/HeroSection';
+import StudioSection from '@/components/StudioSection';
 import ValueProps from '@/components/ValueProps';
 import PricingGrid from '@/components/PricingGrid';
-import Timeline90Days from '@/components/Timeline90Days';
+import ApproachSection from '@/components/ApproachSection';
 import CaseStudies from '@/components/CaseStudies';
-import GovernanceStrip from '@/components/GovernanceStrip';
 import FinalCTA from '@/components/FinalCTA';
 import Footer from '@/components/Footer';
 import ContactModal from '@/components/ContactModal';
@@ -23,11 +23,15 @@ export default function Home() {
       <HeaderNav onOpenContact={openContactModal} />
       <main>
         <HeroSection onOpenContact={openContactModal} />
-        <ValueProps />
-        <PricingGrid />
-        <Timeline90Days />
+        <StudioSection />
+        <section id="services">
+          <ValueProps />
+        </section>
+        <section id="pricing">
+          <PricingGrid />
+        </section>
+        <ApproachSection />
         <CaseStudies />
-        <GovernanceStrip />
         <FinalCTA onOpenContact={openContactModal} />
       </main>
       <Footer />

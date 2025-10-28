@@ -28,6 +28,10 @@
   --radius-pill: 9999px;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   background: var(--bg-obsidian);
   color: var(--text-primary);

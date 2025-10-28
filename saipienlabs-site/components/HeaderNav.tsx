@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { usePathname } from 'next/navigation';
+import Link from 'next/link';
 
 interface HeaderNavProps {
   onOpenContact: () => void;
@@ -8,6 +10,8 @@ interface HeaderNavProps {
 
 export default function HeaderNav({ onOpenContact }: HeaderNavProps) {
   const [scrolled, setScrolled] = useState(false);
+  const pathname = usePathname();
+  const isHomePage = pathname === '/';
 
   useEffect(() => {
     const handleScroll = () => {
@@ -18,6 +22,11 @@ export default function HeaderNav({ onOpenContact }: HeaderNavProps) {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Helper to create nav links that work on any page
+  const getNavLink = (anchor: string) => {
+    return isHomePage ? `#${anchor}` : `/#${anchor}`;
+  };
+
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
@@ -27,33 +36,33 @@ export default function HeaderNav({ onOpenContact }: HeaderNavProps) {
       }`}
     >
       <nav className="container mx-auto px-6 py-4 flex items-center justify-between">
-        {/* Wordmark */}
-        <div className="flex items-center gap-1 text-xl font-semibold">
+        {/* Wordmark - clickable to return home */}
+        <Link href="/" className="flex items-center gap-1 text-xl font-semibold hover:opacity-80 transition-opacity">
           <span className="text-mist">SAIPIEN</span>
           <span className="text-aurora font-mono">[LABS]</span>
-        </div>
+        </Link>
 
         {/* Desktop Navigation */}
         <div className="hidden lg:flex items-center gap-8">
-          <a href="#services" className="text-mist/80 hover:text-mist transition-colors text-sm">
+          <a href={getNavLink('services')} className="text-mist/80 hover:text-mist transition-colors text-sm">
             Services
           </a>
-          <a href="#studio" className="text-mist/80 hover:text-mist transition-colors text-sm">
+          <a href={getNavLink('studio')} className="text-mist/80 hover:text-mist transition-colors text-sm">
             Studio
           </a>
-          <a href="#approach" className="text-mist/80 hover:text-mist transition-colors text-sm">
+          <a href={getNavLink('approach')} className="text-mist/80 hover:text-mist transition-colors text-sm">
             Approach
           </a>
-          <a href="#work" className="text-mist/80 hover:text-mist transition-colors text-sm">
+          <a href={getNavLink('work')} className="text-mist/80 hover:text-mist transition-colors text-sm">
             Work
           </a>
-          <a href="#pricing" className="text-mist/80 hover:text-mist transition-colors text-sm">
+          <a href={getNavLink('pricing')} className="text-mist/80 hover:text-mist transition-colors text-sm">
             Pricing
           </a>
-          <a href="/resources" className="text-mist/80 hover:text-mist transition-colors text-sm">
+          <Link href="/resources" className="text-mist/80 hover:text-mist transition-colors text-sm">
             Resources
-          </a>
-          <a href="#contact" className="text-mist/80 hover:text-mist transition-colors text-sm">
+          </Link>
+          <a href={getNavLink('contact')} className="text-mist/80 hover:text-mist transition-colors text-sm">
             Contact
           </a>
         </div>
