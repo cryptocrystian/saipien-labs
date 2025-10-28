@@ -50,7 +50,7 @@ export default function HeaderNav({ onOpenContact }: HeaderNavProps) {
           <a href="#pricing" className="text-mist/80 hover:text-mist transition-colors text-sm">
             Pricing
           </a>
-          <a href="#resources" className="text-mist/80 hover:text-mist transition-colors text-sm">
+          <a href="/resources" className="text-mist/80 hover:text-mist transition-colors text-sm">
             Resources
           </a>
           <a href="#contact" className="text-mist/80 hover:text-mist transition-colors text-sm">
