@@ -7,7 +7,7 @@ import StudioSection from '@/components/StudioSection';
 import ValueProps from '@/components/ValueProps';
 import PricingGrid from '@/components/PricingGrid';
 import ApproachSection from '@/components/ApproachSection';
-import CaseStudies from '@/components/CaseStudies';
+import CaseStudiesHome from '@/components/sections/CaseStudiesHome';
 import FinalCTA from '@/components/FinalCTA';
 import Footer from '@/components/Footer';
 import ContactModal from '@/components/ContactModal';
@@ -35,7 +35,7 @@ export default function Home() {
         <div className="container mx-auto px-6 py-16">
           <FounderCTA source="homepage_mid" variant="wide" />
         </div>
-        <CaseStudies />
+        <CaseStudiesHome onOpenContact={openContactModal} />
         <FinalCTA onOpenContact={openContactModal} />
       </main>
       <Footer />

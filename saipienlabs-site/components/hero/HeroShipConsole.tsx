@@ -33,21 +33,36 @@ const ReplayIcon = () => (
 );
 
 /**
- * Number counter animation hook
+ * KPI Stat Component with number animation
  */
-function useCounter(from: number, to: number, duration: number, isActive: boolean) {
+interface KPIStatProps {
+  label: string;
+  from: number;
+  to: number;
+  currency?: boolean;
+  unit?: string;
+  isActive: boolean;
+  showArrow?: boolean;
+}
+
+function KPIStat({ label, from, to, currency, unit, isActive, showArrow }: KPIStatProps) {
   const [value, setValue] = useState(from);
 
   useEffect(() => {
-    if (!isActive) return;
+    if (!isActive) {
+      setValue(from);
+      return;
+    }
 
     const startTime = Date.now();
+    const duration = 800;
     const diff = to - from;
 
     const animate = () => {
       const elapsed = Date.now() - startTime;
       const progress = Math.min(elapsed / duration, 1);
-      const current = from + diff * progress;
+      const easeOutCubic = 1 - Math.pow(1 - progress, 3);
+      const current = from + diff * easeOutCubic;
       setValue(current);
 
       if (progress < 1) {
@@ -56,28 +71,56 @@ function useCounter(from: number, to: number, duration: number, isActive: boolea
     };
 
     requestAnimationFrame(animate);
-  }, [from, to, duration, isActive]);
+  }, [from, to, isActive]);
 
-  return value;
+  const formatValue = () => {
+    if (currency) return `$${value.toFixed(2)}`;
+    if (unit === 'ms') return `${Math.round(value)}ms`;
+    return value.toFixed(1);
+  };
+
+  return (
+    <div className="p-3 rounded-lg bg-white/5 border border-white/10">
+      <div className="flex items-center gap-1 text-[10px] uppercase tracking-wider text-[#A8B2C1] mb-1">
+        {label}
+        {showArrow && (
+          <span className="text-emerald-400">
+            <ArrowDownIcon />
+          </span>
+        )}
+      </div>
+      <div className="text-xl font-bold text-emerald-400 font-mono">
+        {formatValue()}
+      </div>
+    </div>
+  );
 }
 
 /**
  * Main Console Component
  */
 function LiveShipConsole({ prefersReducedMotion }: { prefersReducedMotion: boolean }) {
-  const controls = useAnimation();
   const [currentStep, setCurrentStep] = useState<'idle' | 'commit' | 'ai' | 'tests' | 'deploy' | 'kpis'>('idle');
   const [isHovered, setIsHovered] = useState(false);
   const [testsPassed, setTestsPassed] = useState(0);
   const [progress, setProgress] = useState(0);
   const [isDeployed, setIsDeployed] = useState(false);
+  const [diffScroll, setDiffScroll] = useState(0);
+  const [showCursor, setShowCursor] = useState(true);
 
-  // KPI counters
-  const evalScore = useCounter(88.3, 92.4, 800, currentStep === 'kpis');
-  const costPerConv = useCounter(0.18, 0.13, 800, currentStep === 'kpis');
-  const latencyP95 = useCounter(380, 242, 800, currentStep === 'kpis');
+  const speedMultiplier = isHovered ? 0.8 : 1;
 
-  const speedMultiplier = isHovered ? 0.8 : 1; // 20% faster when hovered
+  /**
+   * Cursor blink effect during idle
+   */
+  useEffect(() => {
+    if (currentStep === 'idle' || currentStep === 'commit') {
+      const interval = setInterval(() => {
+        setShowCursor(prev => !prev);
+      }, 530);
+      return () => clearInterval(interval);
+    }
+  }, [currentStep]);
 
   /**
    * Orchestrate the animation sequence
@@ -88,22 +131,23 @@ function LiveShipConsole({ prefersReducedMotion }: { prefersReducedMotion: boole
     setTestsPassed(0);
     setProgress(0);
     setIsDeployed(false);
+    setDiffScroll(0);
 
     await new Promise(resolve => setTimeout(resolve, 300 * speedMultiplier));
 
     // STEP 1: COMMIT
     setCurrentStep('commit');
-    await new Promise(resolve => setTimeout(resolve, 1500 * speedMultiplier));
+    await new Promise(resolve => setTimeout(resolve, 1800 * speedMultiplier));
 
     // STEP 2: AI ASSIST
     setCurrentStep('ai');
-    await new Promise(resolve => setTimeout(resolve, 1200 * speedMultiplier));
+    await new Promise(resolve => setTimeout(resolve, 1400 * speedMultiplier));
 
     // STEP 3: TESTS
     setCurrentStep('tests');
 
     // Animate progress bar
-    const progressDuration = 1500 * speedMultiplier;
+    const progressDuration = 1600 * speedMultiplier;
     const progressSteps = 60;
     const progressInterval = progressDuration / progressSteps;
 
@@ -116,20 +160,30 @@ function LiveShipConsole({ prefersReducedMotion }: { prefersReducedMotion: boole
     }
 
     setTestsPassed(23);
-    await new Promise(resolve => setTimeout(resolve, 400 * speedMultiplier));
+    await new Promise(resolve => setTimeout(resolve, 500 * speedMultiplier));
 
     // STEP 4: DEPLOY
     setCurrentStep('deploy');
-    await new Promise(resolve => setTimeout(resolve, 800 * speedMultiplier));
+    await new Promise(resolve => setTimeout(resolve, 900 * speedMultiplier));
     setIsDeployed(true);
-    await new Promise(resolve => setTimeout(resolve, 600 * speedMultiplier));
+    await new Promise(resolve => setTimeout(resolve, 700 * speedMultiplier));
 
     // STEP 5: KPIs
     setCurrentStep('kpis');
+    await new Promise(resolve => setTimeout(resolve, 1800 * speedMultiplier));
+
+    // IDLE: Pause then micro-scroll
     await new Promise(resolve => setTimeout(resolve, 1500 * speedMultiplier));
 
-    // Idle pause
-    await new Promise(resolve => setTimeout(resolve, 1500 * speedMultiplier));
+    // Subtle diff scroll animation
+    for (let i = 0; i < 3; i++) {
+      setDiffScroll(12);
+      await new Promise(resolve => setTimeout(resolve, 200));
+      setDiffScroll(0);
+      await new Promise(resolve => setTimeout(resolve, 200));
+    }
+
+    await new Promise(resolve => setTimeout(resolve, 300 * speedMultiplier));
 
     // Loop
     if (!prefersReducedMotion) {
@@ -149,7 +203,6 @@ function LiveShipConsole({ prefersReducedMotion }: { prefersReducedMotion: boole
     }
   }, [prefersReducedMotion]);
 
-  // Variants for animations
   const fadeSlideIn: Variants = {
     hidden: { opacity: 0, x: -20 },
     visible: { opacity: 1, x: 0, transition: { duration: 0.4 } }
@@ -159,9 +212,7 @@ function LiveShipConsole({ prefersReducedMotion }: { prefersReducedMotion: boole
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      transition: {
-        staggerChildren: 0.12
-      }
+      transition: { staggerChildren: 0.12 }
     }
   };
 
@@ -172,7 +223,7 @@ function LiveShipConsole({ prefersReducedMotion }: { prefersReducedMotion: boole
 
   return (
     <div
-      className="relative w-full h-[420px] rounded-2xl bg-[#11141A] shadow-[0_0_40px_rgba(0,0,0,0.25)] border border-white/5 overflow-hidden"
+      className="relative w-full h-[480px] rounded-2xl bg-[#11141A] shadow-[0_0_40px_rgba(0,0,0,0.25)] border border-white/5 overflow-hidden"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       role="region"
@@ -195,7 +246,7 @@ function LiveShipConsole({ prefersReducedMotion }: { prefersReducedMotion: boole
       {/* Console content */}
       <div className="p-8 h-full flex flex-col justify-between">
         {/* Main sequence area */}
-        <div className="space-y-6 flex-grow">
+        <div className="space-y-6 flex-grow overflow-hidden">
           {/* STEP 1: COMMIT */}
           {currentStep !== 'idle' && (
             <motion.div
@@ -204,10 +255,13 @@ function LiveShipConsole({ prefersReducedMotion }: { prefersReducedMotion: boole
               variants={fadeSlideIn}
               aria-label="Commit step"
             >
-              <div className="font-mono text-xs text-[#A8B2C1] mb-2">
-                commit 64b2c7e · feat: intake router + eval hooks
+              <div className="font-mono text-xs text-[#A8B2C1] mb-2 flex items-center gap-2">
+                <span>commit 64b2c7e · feat: intake router + eval hooks</span>
+                {currentStep === 'commit' && showCursor && (
+                  <span className="w-1.5 h-3 bg-[#00F5A0] inline-block" />
+                )}
               </div>
-              <div className="space-y-1">
+              <div className="space-y-1" style={{ transform: `translateY(-${diffScroll}px)`, transition: 'transform 0.2s ease-out' }}>
                 <div className="font-mono text-xs text-emerald-400 bg-emerald-500/10 border-l-2 border-emerald-400/60 pl-2 py-0.5">
                   + function evaluateIntent(message, context)
                 </div>
@@ -261,7 +315,6 @@ function LiveShipConsole({ prefersReducedMotion }: { prefersReducedMotion: boole
                 <span className="text-xs font-mono text-emerald-400">{testsPassed}/23 passed</span>
               </div>
 
-              {/* Progress bar */}
               <div className="h-1.5 bg-white/5 rounded-full overflow-hidden">
                 <motion.div
                   className="h-full bg-gradient-to-r from-emerald-400 to-emerald-500"
@@ -269,7 +322,6 @@ function LiveShipConsole({ prefersReducedMotion }: { prefersReducedMotion: boole
                 />
               </div>
 
-              {/* Check icons */}
               {progress === 100 && (
                 <motion.div
                   className="flex gap-1 flex-wrap"
@@ -313,7 +365,6 @@ function LiveShipConsole({ prefersReducedMotion }: { prefersReducedMotion: boole
                 </div>
               </div>
 
-              {/* Border pulse effect on deploy */}
               {isDeployed && (
                 <motion.div
                   className="absolute inset-0 rounded-2xl border-2 border-[#00F5A0] pointer-events-none"
@@ -334,55 +385,43 @@ function LiveShipConsole({ prefersReducedMotion }: { prefersReducedMotion: boole
               className="grid grid-cols-3 gap-3"
               aria-label="KPIs step"
             >
-              {/* Eval Score */}
-              <motion.div
-                variants={childFadeIn}
-                className="p-3 rounded-lg bg-white/5 border border-white/10"
-              >
-                <div className="text-[10px] uppercase tracking-wider text-[#A8B2C1] mb-1">Eval Score</div>
-                <div className="text-xl font-bold text-emerald-400 font-mono">
-                  {evalScore.toFixed(1)}
-                </div>
+              <motion.div variants={childFadeIn}>
+                <KPIStat
+                  label="eval score"
+                  from={88.3}
+                  to={92.4}
+                  isActive={currentStep === 'kpis'}
+                />
               </motion.div>
 
-              {/* Cost per Conversion */}
-              <motion.div
-                variants={childFadeIn}
-                className="p-3 rounded-lg bg-white/5 border border-white/10"
-              >
-                <div className="text-[10px] uppercase tracking-wider text-[#A8B2C1] mb-1 flex items-center gap-1">
-                  Cost/Conv
-                  <span className="text-emerald-400">
-                    <ArrowDownIcon />
-                  </span>
-                </div>
-                <div className="text-xl font-bold text-emerald-400 font-mono">
-                  ${costPerConv.toFixed(2)}
-                </div>
+              <motion.div variants={childFadeIn}>
+                <KPIStat
+                  label="cost / conv"
+                  from={0.18}
+                  to={0.13}
+                  currency
+                  isActive={currentStep === 'kpis'}
+                  showArrow
+                />
               </motion.div>
 
-              {/* Latency P95 */}
-              <motion.div
-                variants={childFadeIn}
-                className="p-3 rounded-lg bg-white/5 border border-white/10"
-              >
-                <div className="text-[10px] uppercase tracking-wider text-[#A8B2C1] mb-1 flex items-center gap-1">
-                  Latency P95
-                  <span className="text-emerald-400">
-                    <ArrowDownIcon />
-                  </span>
-                </div>
-                <div className="text-xl font-bold text-emerald-400 font-mono">
-                  {Math.round(latencyP95)}ms
-                </div>
+              <motion.div variants={childFadeIn}>
+                <KPIStat
+                  label="latency p95"
+                  from={380}
+                  to={242}
+                  unit="ms"
+                  isActive={currentStep === 'kpis'}
+                  showArrow
+                />
               </motion.div>
             </motion.div>
           )}
         </div>
 
-        {/* Footer */}
+        {/* Footer caption */}
         <div className="text-[10px] font-mono text-[#A8B2C1]/40 mt-4">
-          // live release simulation · AI-assisted
+          // AI dev pod: code → test → deploy → metrics
         </div>
       </div>
     </div>
@@ -422,13 +461,12 @@ export default function HeroShipConsole({ onOpenContact }: HeroShipConsoleProps)
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20 bg-[#0D0F12]">
-      {/* Subtle background gradient */}
       <div className="absolute inset-0 opacity-[0.03]">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(0,245,160,0.1),transparent_50%)]" />
       </div>
 
       <div className="container mx-auto px-6 relative z-10">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
+        <div className="grid lg:grid-cols-2 gap-16 items-center">
           {/* LEFT SIDE: Text content */}
           <div className="space-y-8">
             <h1 className="text-5xl lg:text-6xl xl:text-7xl font-bold leading-tight text-[#E6EBF2]">
@@ -451,7 +489,6 @@ export default function HeroShipConsole({ onOpenContact }: HeroShipConsoleProps)
                 <span className="bg-gradient-to-r from-[#00F5A0] to-[#9A5CFF] bg-clip-text text-transparent">
                   really fast.
                 </span>
-                {/* Gradient sweep effect */}
                 <motion.div
                   className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
                   initial={{ x: '-100%' }}
@@ -503,7 +540,7 @@ export default function HeroShipConsole({ onOpenContact }: HeroShipConsoleProps)
 
           {/* RIGHT SIDE: Console */}
           <motion.div
-            className="relative lg:block"
+            className="relative lg:block lg:pl-8"
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.6, duration: 0.8 }}
@@ -516,14 +553,11 @@ export default function HeroShipConsole({ onOpenContact }: HeroShipConsoleProps)
   );
 }
 
-/**
- * SSR Skeleton Placeholder
- */
 export function HeroShipConsoleSkeleton() {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20 bg-[#0D0F12]">
       <div className="container mx-auto px-6 relative z-10">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
+        <div className="grid lg:grid-cols-2 gap-16 items-center">
           <div className="space-y-8">
             <h1 className="text-5xl lg:text-6xl xl:text-7xl font-bold leading-tight text-[#E6EBF2]">
               Build real software, really fast.
@@ -536,7 +570,7 @@ export function HeroShipConsoleSkeleton() {
               <div className="border-2 border-[#A8B2C1]/20 px-8 py-4 rounded-2xl h-14 animate-pulse" />
             </div>
           </div>
-          <div className="w-full h-[420px] rounded-2xl bg-[#11141A] border border-white/5 animate-pulse" />
+          <div className="w-full h-[480px] rounded-2xl bg-[#11141A] border border-white/5 animate-pulse" />
         </div>
       </div>
     </section>

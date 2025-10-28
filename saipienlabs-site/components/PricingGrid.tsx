@@ -1,6 +1,19 @@
 export default function PricingGrid() {
   const offerings = [
     {
+      name: "AI Feasibility Audit",
+      price: "$5k–$10k",
+      features: [
+        "Viability & ROI model",
+        "Architecture sketch & risk analysis",
+        "Dataset readiness & cost-to-serve",
+        "Feasibility Readout Deck + 90-Day roadmap"
+      ],
+      cta: "Book Feasibility Readout",
+      ctaLink: "#contact",
+      footer: "// de-risk before you invest"
+    },
+    {
       name: "Sprint Zero",
       price: "$12k–$25k",
       features: [
@@ -78,14 +91,24 @@ export default function PricingGrid() {
           {offerings.map((offering, index) => (
             <div
               key={index}
-              className="bg-slate rounded-xl p-8 border-t-2 hover:shadow-2xl hover:shadow-accentBlue/10 transition-all duration-300 group flex flex-col"
+              className="relative bg-slate rounded-xl p-8 border-t-2 hover:shadow-2xl hover:shadow-accentBlue/10 hover:-translate-y-1 transition-all duration-300 group flex flex-col overflow-hidden"
               style={{
                 borderImage: `linear-gradient(90deg, #00BFA6 0%, #4C8DFF 50%, #8B5CF6 100%) 1`,
                 borderImageSlice: '1 0 0 0'
               }}
             >
-              <div className="flex-grow">
-                <h3 className="text-2xl font-semibold text-mist mb-2">
+              {/* Gradient ring on hover */}
+              <div className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+                <div className="absolute inset-0 rounded-xl border-2 border-transparent bg-gradient-to-r from-accentTeal/20 to-accentViolet/20" />
+              </div>
+
+              <div className="relative flex-grow">
+                {/* AI-accelerated pill */}
+                <div className="absolute top-0 right-0 px-3 py-1 rounded-full bg-gradient-to-r from-accentTeal/10 to-accentBlue/10 border border-accentTeal/30">
+                  <span className="text-[10px] uppercase tracking-wider text-accentTeal font-semibold">AI-accelerated</span>
+                </div>
+
+                <h3 className="text-2xl font-semibold text-mist mb-2 pr-32">
                   {offering.name}
                 </h3>
                 <p className="text-accentTeal font-mono text-lg mb-6">
@@ -102,10 +125,15 @@ export default function PricingGrid() {
                 </ul>
               </div>
 
-              <div className="mt-auto pt-6 border-t border-mist/10">
+              <div className="relative mt-auto pt-6 border-t border-mist/10">
                 <a
                   href={offering.ctaLink}
                   className="inline-flex items-center gap-2 text-accentBlue hover:text-accentTeal transition-colors font-mono text-sm group-hover:gap-3 transition-all"
+                  onClick={() => {
+                    if (typeof window !== 'undefined' && window.saipien?.track) {
+                      window.saipien.track('pricing_click', { source: 'pricing_grid', offering: offering.name });
+                    }
+                  }}
                 >
                   {offering.cta} →
                 </a>
