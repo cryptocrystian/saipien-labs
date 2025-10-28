@@ -56,6 +56,14 @@ export default function HeaderNav({ onOpenContact }: HeaderNavProps) {
           <a href={getNavLink('work')} className="text-mist/80 hover:text-mist transition-colors text-sm">
             Work
           </a>
+          <Link
+            href="/founder-partnership"
+            className={`text-sm transition-colors ${
+              pathname === '/founder-partnership' ? 'text-mist font-semibold' : 'text-mist/80 hover:text-mist'
+            }`}
+          >
+            Partnerships
+          </Link>
           <a href={getNavLink('pricing')} className="text-mist/80 hover:text-mist transition-colors text-sm">
             Pricing
           </a>
