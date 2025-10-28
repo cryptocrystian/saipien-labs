@@ -11,6 +11,7 @@ import CaseStudies from '@/components/CaseStudies';
 import FinalCTA from '@/components/FinalCTA';
 import Footer from '@/components/Footer';
 import ContactModal from '@/components/ContactModal';
+import FounderCTA from '@/components/cta/FounderCTA';
 
 export default function Home() {
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
@@ -31,6 +32,9 @@ export default function Home() {
           <PricingGrid />
         </section>
         <ApproachSection />
+        <div className="container mx-auto px-6 py-16">
+          <FounderCTA source="homepage_mid" variant="wide" />
+        </div>
         <CaseStudies />
         <FinalCTA onOpenContact={openContactModal} />
       </main>
