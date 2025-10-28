@@ -1,3 +1,8 @@
+'use client';
+
+import { useState } from 'react';
+import HeaderNav from '@/components/HeaderNav';
+import ContactModal from '@/components/ContactModal';
 import FP_Hero from '@/components/sections/FP_Hero';
 import FP_WhyUs from '@/components/sections/FP_WhyUs';
 import FP_HowItWorks from '@/components/sections/FP_HowItWorks';
@@ -5,15 +10,16 @@ import FP_Models from '@/components/sections/FP_Models';
 import FP_Criteria from '@/components/sections/FP_Criteria';
 import FP_FAQ from '@/components/sections/FP_FAQ';
 import FounderCTA from '@/components/cta/FounderCTA';
-import { founderPartnershipMetadata, generateJSONLD } from '@/lib/seo/founderPartnershipSEO';
-
-export const metadata = founderPartnershipMetadata;
+import { generateJSONLD } from '@/lib/seo/founderPartnershipSEO';
 
 export default function FounderPartnershipPage() {
+  const [isContactModalOpen, setIsContactModalOpen] = useState(false);
   const { faqSchema, organizationSchema } = generateJSONLD();
 
   return (
     <>
+      <HeaderNav onOpenContact={() => setIsContactModalOpen(true)} />
+
       {/* JSON-LD Structured Data */}
       <script
         type="application/ld+json"
@@ -35,6 +41,8 @@ export default function FounderPartnershipPage() {
           <FounderCTA source="founder_page_bottom" variant="wide" />
         </div>
       </main>
+
+      <ContactModal isOpen={isContactModalOpen} onClose={() => setIsContactModalOpen(false)} />
     </>
   );
 }
