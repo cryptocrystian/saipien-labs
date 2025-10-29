@@ -1,0 +1,140 @@
+{
+  "org": {
+    "name": "saipienlabs",
+    "displayName": "Saipien [LABS]",
+    "description": "AI-accelerated dev pods that ship production in 90 days",
+    "website": "https://saipienlabs.com",
+    "email": "hello@saipienlabs.com",
+    "location": "Remote-First",
+    "twitter": "SaipienLabs",
+    "requireTwoFactor": true
+  },
+  "repos": [
+    {
+      "name": "saipienlabs.com",
+      "description": "Main website — Next.js on Cloudflare Pages",
+      "website": "https://saipienlabs.com",
+      "topics": [
+        "nextjs",
+        "typescript",
+        "cloudflare",
+        "tailwind",
+        "ai",
+        "saas",
+        "saipien-labs"
+      ],
+      "isPrivate": false
+    },
+    {
+      "name": "pravado",
+      "description": "Revenue Ops automation — AI-powered pipeline intelligence",
+      "website": "https://saipienlabs.com/case-studies/pravado",
+      "topics": [
+        "revenue-ops",
+        "ai",
+        "automation",
+        "crm",
+        "typescript",
+        "saipien-labs"
+      ],
+      "isPrivate": false
+    },
+    {
+      "name": "aivery",
+      "description": "AI workflow engine for support — Reduce AHT by 40%",
+      "website": "https://saipienlabs.com/case-studies/aivery",
+      "topics": [
+        "ai",
+        "customer-support",
+        "automation",
+        "workflow-engine",
+        "typescript",
+        "saipien-labs"
+      ],
+      "isPrivate": false
+    },
+    {
+      "name": "wellstead",
+      "description": "Intake & triage automation — Intelligent routing and prioritization",
+      "website": "https://saipienlabs.com/case-studies/wellstead",
+      "topics": [
+        "ai",
+        "triage",
+        "automation",
+        "intake",
+        "typescript",
+        "saipien-labs"
+      ],
+      "isPrivate": false
+    },
+    {
+      "name": "saipien-templates",
+      "description": "Production-ready starter kits — Next.js SaaS, Supabase Edge, AI Agents",
+      "website": "https://saipienlabs.com",
+      "topics": [
+        "nextjs",
+        "supabase",
+        "ai",
+        "templates",
+        "starter-kit",
+        "typescript",
+        "saipien-labs"
+      ],
+      "isPrivate": false
+    },
+    {
+      "name": "spec-kit",
+      "description": "Dev automations — GitHub Actions, AI prompts, deployment scripts",
+      "website": "https://saipienlabs.com",
+      "topics": [
+        "devops",
+        "automation",
+        "github-actions",
+        "ai",
+        "typescript",
+        "saipien-labs"
+      ],
+      "isPrivate": false
+    }
+  ],
+  "transfer": {
+    "enabled": false,
+    "repos": [
+      {
+        "name": "saipienlabs-site",
+        "fromOwner": "cryptocrystian",
+        "renameAs": "saipienlabs.com"
+      }
+    ]
+  },
+  "teams": [
+    {
+      "name": "core",
+      "description": "Core team members",
+      "privacy": "closed",
+      "members": ["cryptocrystian"]
+    },
+    {
+      "name": "docs",
+      "description": "Documentation team",
+      "privacy": "closed",
+      "members": ["cryptocrystian"]
+    }
+  ],
+  "defaults": {
+    "defaultBranch": "main",
+    "requirePRReviews": true,
+    "requireStatusChecks": ["build", "test", "codeql"],
+    "dismissStaleReviews": true,
+    "requireCodeOwnerReviews": true,
+    "enforceAdmins": true,
+    "topics": [
+      "nextjs",
+      "typescript",
+      "ai",
+      "automation",
+      "saas",
+      "saipien-labs"
+    ]
+  }
+}
