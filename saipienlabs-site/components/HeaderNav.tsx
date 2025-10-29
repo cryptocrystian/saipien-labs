@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 
 interface HeaderNavProps {
   onOpenContact: () => void;
@@ -36,10 +37,16 @@ export default function HeaderNav({ onOpenContact }: HeaderNavProps) {
       }`}
     >
       <nav className="container mx-auto px-6 py-4 flex items-center justify-between">
-        {/* Wordmark - clickable to return home */}
-        <Link href="/" className="flex items-center gap-1 text-xl font-semibold hover:opacity-80 transition-opacity">
-          <span className="text-mist">SAIPIEN</span>
-          <span className="text-aurora font-mono">[LABS]</span>
+        {/* Logo - clickable to return home */}
+        <Link href="/" className="flex items-center hover:opacity-80 transition-opacity">
+          <Image
+            src="/saipien-labs-logo.png"
+            alt="Saipien Labs"
+            width={180}
+            height={40}
+            priority
+            className="h-8 w-auto"
+          />
         </Link>
 
         {/* Desktop Navigation */}

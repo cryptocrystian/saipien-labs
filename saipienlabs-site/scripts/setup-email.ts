@@ -20,20 +20,20 @@ import { createInterface } from 'readline';
 // ============================================================================
 
 const DEFAULT_ROUTES = [
-  { address: "hello@saipienlabs.com", destination: "YOUR_PRIMARY_GMAIL@gmail.com" },
-  { address: "founders@saipienlabs.com", destination: "YOUR_PRIMARY_GMAIL@gmail.com" },
-  { address: "press@saipienlabs.com", destination: "YOUR_PRIMARY_GMAIL@gmail.com" },
-  { address: "partners@saipienlabs.com", destination: "YOUR_PRIMARY_GMAIL@gmail.com" },
-  { address: "billing@saipienlabs.com", destination: "YOUR_FINANCE_GMAIL@gmail.com" },
-  { address: "support@saipienlabs.com", destination: "YOUR_SUPPORT_GMAIL@gmail.com" },
+  { address: "hello@saipienlabs.com", destination: "cdibrell@gmail.com" },
+  { address: "founders@saipienlabs.com", destination: "cdibrell@gmail.com" },
+  { address: "press@saipienlabs.com", destination: "cdibrell@gmail.com" },
+  { address: "partners@saipienlabs.com", destination: "cdibrell@gmail.com" },
+  { address: "billing@saipienlabs.com", destination: "cdibrell@gmail.com" },
+  { address: "support@saipienlabs.com", destination: "cdibrell@gmail.com" },
 ];
 
 // Fallback DKIM CNAMEs if Mailgun API doesn't return them
-// Paste these from Mailgun UI > Sending > Domains > mg.saipienlabs.com > DNS Records
+// Paste these from Mailgun UI > Sending > Domains > saipienlabs.com > DNS Records
 const DKIM_CNAME_FALLBACKS = [
-  { name: "krs._domainkey.mg", content: "krs.domainkey.mg.saipienlabs.com.mailgun.org" },
-  { name: "l3s._domainkey.mg", content: "l3s.domainkey.mg.saipienlabs.com.mailgun.org" },
-  { name: "mxs._domainkey.mg", content: "mxs.domainkey.mg.saipienlabs.com.mailgun.org" },
+  { name: "krs._domainkey", content: "krs.domainkey.saipienlabs.com.mailgun.org" },
+  { name: "l3s._domainkey", content: "l3s.domainkey.saipienlabs.com.mailgun.org" },
+  { name: "mxs._domainkey", content: "mxs.domainkey.saipienlabs.com.mailgun.org" },
 ];
 
 // ============================================================================

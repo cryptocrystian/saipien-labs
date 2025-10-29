@@ -1,3 +1,5 @@
+import Image from 'next/image';
+
 export default function Footer() {
   const links = [
     { name: "Services", href: "#services" },
@@ -11,10 +13,15 @@ export default function Footer() {
   return (
     <footer className="bg-obsidian border-t border-mist/5 py-12">
       <div className="container mx-auto px-6">
-        {/* Wordmark */}
-        <div className="flex items-center gap-1 text-xl font-semibold mb-8">
-          <span className="text-mist">SAIPIEN</span>
-          <span className="text-aurora font-mono">[LABS]</span>
+        {/* Logo */}
+        <div className="mb-8">
+          <Image
+            src="/saipien-labs-logo.png"
+            alt="Saipien Labs"
+            width={180}
+            height={40}
+            className="h-8 w-auto"
+          />
         </div>
 
         {/* Links */}
