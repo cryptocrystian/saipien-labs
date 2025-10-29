@@ -510,7 +510,9 @@ export default function HeroShipConsole({ onOpenContact }: HeroShipConsoleProps)
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.8, duration: 0.6 }}
             >
-              AI-accelerated dev pods that ship production in weeks — with enterprise discipline, security controls, and budget guardrails.
+              AI-accelerated dev pods and automation strategy.
+              <br />
+              We design, build, and integrate production AI into your workflows — with security, compliance, and budget guardrails.
             </motion.p>
 
             <motion.div
@@ -563,7 +565,9 @@ export function HeroShipConsoleSkeleton() {
               Build real software, really fast.
             </h1>
             <p className="text-xl lg:text-2xl text-[#A8B2C1] leading-relaxed max-w-2xl">
-              AI-accelerated dev pods that ship production in weeks — with enterprise discipline, security controls, and budget guardrails.
+              AI-accelerated dev pods and automation strategy.
+              <br />
+              We design, build, and integrate production AI into your workflows — with security, compliance, and budget guardrails.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 pt-4">
               <div className="bg-gradient-to-r from-[#00F5A0] to-[#9A5CFF] px-8 py-4 rounded-2xl h-14 animate-pulse" />
