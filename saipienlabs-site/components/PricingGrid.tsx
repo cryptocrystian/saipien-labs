@@ -1,6 +1,18 @@
 export default function PricingGrid() {
   const offerings = [
     {
+      name: "AI Workflow & Automation Audit",
+      price: "$15k–$40k",
+      features: [
+        "Automation map + ROI",
+        "Compliance / data boundary plan",
+        "Exec-ready rollout path"
+      ],
+      cta: "See Automation Brief →",
+      ctaLink: "mailto:hello@saipienlabs.com?subject=Automation%20Audit%20Brief",
+      footer: "// blueprint before you build"
+    },
+    {
       name: "AI Feasibility Audit",
       price: "$5k–$10k",
       features: [

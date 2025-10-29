@@ -35,7 +35,7 @@ export default function StudioSection() {
               <div className="space-y-4 text-lg text-mist/80 leading-relaxed">
                 <p>
                   Saipien [LABS] is a senior, AI-accelerated development pod.
-                  We scope, build, integrate, harden, and hand off production systems in 90 days — and we stay on to run them if you want continuity.
+                  We audit workflows, map high-leverage automation, and then build, integrate, harden, and hand off production systems — usually inside 90 days.
                 </p>
                 <p>
                   No junior waterfall team. No 8-week discovery theater.

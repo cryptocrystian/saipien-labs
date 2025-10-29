@@ -3,17 +3,26 @@ export default function ValueProps() {
     {
       title: "Outcome-Led",
       description: "We start at KPIs, not demos. Lead velocity, AHT, NRR, SLA — we define the targets your operators already care about.",
-      gradient: "from-accentTeal/20 via-accentTeal/10 to-transparent"
+      gradient: "from-accentTeal/20 via-accentTeal/10 to-transparent",
+      color: "#00BFA6"
     },
     {
       title: "Integration-First",
       description: "We wire AI into the systems you actually run: CRM, ERP, support desk, data warehouse, auth. No isolated science project.",
-      gradient: "from-accentBlue/20 via-accentBlue/10 to-transparent"
+      gradient: "from-accentBlue/20 via-accentBlue/10 to-transparent",
+      color: "#4C8DFF"
     },
     {
       title: "Velocity Without Corners",
       description: "You get speed plus observability, tests, rollback plans, spend caps, and human-in-the-loop controls.",
-      gradient: "from-accentViolet/20 via-accentViolet/10 to-transparent"
+      gradient: "from-accentViolet/20 via-accentViolet/10 to-transparent",
+      color: "#8B5CF6"
+    },
+    {
+      title: "AI Workflow & Automation Design",
+      description: "We audit your current process, identify high-leverage automation targets, map ROI, and blueprint human-in-the-loop guardrails — before anyone writes a line of code.",
+      gradient: "from-amber-500/20 via-amber-500/10 to-transparent",
+      color: "#F59E0B"
     }
   ];
 
@@ -25,17 +34,13 @@ export default function ValueProps() {
             why teams choose saipien [labs]
           </p>
         </div>
-        <div className="grid md:grid-cols-3 gap-8">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
           {props.map((prop, index) => (
             <div
               key={index}
               className="bg-slate rounded-xl p-8 border-t-2 border-transparent bg-gradient-to-b hover:border-aurora transition-all duration-300 group"
               style={{
-                borderImage: `linear-gradient(90deg, ${
-                  index === 0 ? '#00BFA6' : index === 1 ? '#4C8DFF' : '#8B5CF6'
-                } 0%, ${
-                  index === 0 ? '#00BFA6' : index === 1 ? '#4C8DFF' : '#8B5CF6'
-                } 100%) 1`,
+                borderImage: `linear-gradient(90deg, ${prop.color} 0%, ${prop.color} 100%) 1`,
                 borderImageSlice: '1 0 0 0'
               }}
             >

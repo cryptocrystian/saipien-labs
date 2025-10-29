@@ -54,8 +54,9 @@ export default function HeroSection({ onOpenContact }: HeroSectionProps) {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.8, duration: 0.6 }}
             >
-              AI-accelerated dev pods that ship production in weeks — with enterprise discipline,
-              security controls, and budget guardrails.
+              AI-accelerated dev pods and automation strategy.
+              <br />
+              We design, build, and integrate production AI into your workflows — with security, compliance, and budget guardrails.
             </motion.p>
 
             {/* CTAs */}
