@@ -40,7 +40,7 @@ import {
 
 const ENV = {
   GH_TOKEN: process.env.GH_TOKEN || '',
-  GH_ORG: process.env.GH_ORG || 'saipienlabs',
+  GH_ORG: process.env.GH_ORG || 'Saipien-Labs',
   GH_OWNER: process.env.GH_OWNER_USERNAME || 'cryptocrystian',
   SITE_URL: process.env.SITE_URL || 'https://saipienlabs.com',
 };

@@ -1,6 +1,6 @@
 # GitHub Organization Bootstrap CLI
 
-Automated setup tool for the **saipienlabs** GitHub organization with branded assets, repositories, CI/CD workflows, and security configurations.
+Automated setup tool for the **Saipien-Labs** GitHub organization with branded assets, repositories, CI/CD workflows, and security configurations.
 
 ## Features
 
@@ -28,7 +28,7 @@ Create a token at https://github.com/settings/tokens with these scopes:
 
 ```bash
 export GH_TOKEN="ghp_your_token_here"
-export GH_ORG="saipienlabs"
+export GH_ORG="Saipien-Labs"
 export GH_OWNER_USERNAME="cryptocrystian"
 export SITE_URL="https://saipienlabs.com"
 ```
