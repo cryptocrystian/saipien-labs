@@ -3,13 +3,20 @@
  * Cloudflare Email Routing + Mailgun SMTP Configuration Script
  *
  * Automates:
- * - SPF, DMARC, and Mailgun DKIM records in Cloudflare DNS
+ * - SPF record with Mailgun include (merged with existing)
+ * - DMARC record for email authentication
+ * - Root-domain TXT DKIM record (mx._domainkey) for Mailgun
+ * - Optional tracking CNAME (email.domain.com → mailgun.org)
  * - Cloudflare Email Routing setup with forwarding rules
- * - Mailgun domain verification and SMTP credential creation
+ * - Mailgun domain verification polling
+ * - SMTP credential creation
+ *
+ * NOTE: Does NOT create MX records (uses Cloudflare Email Routing instead)
  *
  * Usage:
  *   npx tsx scripts/setup-email.ts --show-plan    # Dry run
  *   npx tsx scripts/setup-email.ts --noninteractive # Apply without confirmation
+ *   npx tsx scripts/setup-email.ts --dkim-txt="k=rsa; p=MIGFMA0..." # Provide DKIM value
  *   npx tsx scripts/setup-email.ts                 # Interactive mode
  */
 
@@ -28,13 +35,8 @@ const DEFAULT_ROUTES = [
   { address: "support@saipienlabs.com", destination: "cdibrell@gmail.com" },
 ];
 
-// Fallback DKIM CNAMEs if Mailgun API doesn't return them
-// Paste these from Mailgun UI > Sending > Domains > saipienlabs.com > DNS Records
-const DKIM_CNAME_FALLBACKS = [
-  { name: "krs._domainkey", content: "krs.domainkey.saipienlabs.com.mailgun.org" },
-  { name: "l3s._domainkey", content: "l3s.domainkey.saipienlabs.com.mailgun.org" },
-  { name: "mxs._domainkey", content: "mxs.domainkey.saipienlabs.com.mailgun.org" },
-];
+// NOTE: This script uses root-domain TXT DKIM records instead of CNAME records.
+// Pass the DKIM value via --dkim-txt flag from Mailgun UI.
 
 // ============================================================================
 // ENVIRONMENT VARIABLES
@@ -60,6 +62,7 @@ const FLAGS = {
   showPlan: args.includes('--show-plan'),
   nonInteractive: args.includes('--noninteractive') || process.env.RUN_NONINTERACTIVE === 'true',
   forceDmarc: args.includes('--force-dmarc'),
+  dkimTxt: args.find(arg => arg.startsWith('--dkim-txt='))?.split('=')[1] || '',
 };
 
 // ============================================================================
@@ -86,11 +89,6 @@ interface CloudflareEmailRule {
   name: string;
   matchers: Array<{ type: string; field: string; value: string }>;
   actions: Array<{ type: string; value: string[] }>;
-}
-
-interface MailgunDKIMRecord {
-  name: string;
-  content: string;
 }
 
 interface Change {
@@ -332,12 +330,65 @@ namespace Mailgun {
   }
 
   export async function getDomain(): Promise<any> {
-    const url = `${ENV.MG_BASE}/v3/domains/${ENV.MG_SENDING_DOMAIN}`;
+    const url = `${ENV.MG_BASE}/v3/domains/${ENV.ROOT_DOMAIN}`;
     const response = await httpRequest<any>(url, {
       headers: headers(),
     });
 
     return response.domain || response;
+  }
+
+  export async function pollDomainVerification(maxAttempts = 10, intervalMs = 15000): Promise<void> {
+    log('🔍 Polling Mailgun domain verification...', 'cyan');
+    log('');
+
+    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+      try {
+        const domain = await getDomain();
+
+        log(`  Attempt ${attempt}/${maxAttempts}:`, 'gray');
+
+        // Check DKIM
+        const dkimFound = domain.state?.dkim_key_found || domain.dkim_key_found;
+        const dkimVerified = domain.state?.dkim_verified || domain.dkim_verified;
+        log(`    DKIM record found: ${dkimFound ? '✓' : '✗'}`, dkimFound ? 'green' : 'yellow');
+        log(`    DKIM verified: ${dkimVerified ? '✓' : '✗'}`, dkimVerified ? 'green' : 'yellow');
+
+        // Check SPF
+        const spfFound = domain.state?.spf_record_found || domain.spf_record_found;
+        const spfVerified = domain.state?.spf_verified || domain.spf_verified;
+        log(`    SPF record found: ${spfFound ? '✓' : '✗'}`, spfFound ? 'green' : 'yellow');
+        log(`    SPF verified: ${spfVerified ? '✓' : '✗'}`, spfVerified ? 'green' : 'yellow');
+
+        // Check receiving (we ignore this since we're not using their MX)
+        const receiving = domain.state?.receiving || domain.receiving;
+        log(`    MX receiving: ${receiving ? '✓' : '✗'} (optional, using Cloudflare)`, 'gray');
+
+        log('');
+
+        // If DKIM and SPF are both verified, we're done
+        if (dkimVerified && spfVerified) {
+          log('✅ Domain verification complete!', 'green');
+          log('');
+          return;
+        }
+
+        // Wait before next attempt
+        if (attempt < maxAttempts) {
+          log(`  Waiting ${intervalMs / 1000}s before next check...`, 'gray');
+          log('');
+          await new Promise(resolve => setTimeout(resolve, intervalMs));
+        }
+      } catch (error) {
+        log(`  ⚠ Error checking domain: ${error}`, 'yellow');
+        log('');
+      }
+    }
+
+    log('⚠ Domain verification incomplete after max attempts', 'yellow');
+    log('  You may need to wait for DNS propagation (can take up to 48 hours)', 'gray');
+    log('  Check status at: https://app.mailgun.com/app/sending/domains', 'gray');
+    log('');
   }
 
   export async function listCredentials(): Promise<any[]> {
@@ -379,7 +430,7 @@ namespace Mailgun {
 // ============================================================================
 
 async function setupSPF(changes: Change[], dryRun: boolean): Promise<void> {
-  const spfValue = 'v=spf1 include:mailgun.org ~all';
+  const spfValue = 'v=spf1 include:mailgun.org -all';
   const rootDomain = ENV.ROOT_DOMAIN;
 
   // Look for existing SPF records
@@ -414,8 +465,14 @@ async function setupSPF(changes: Change[], dryRun: boolean): Promise<void> {
         description: `SPF record already includes mailgun.org: "${existing.content}"`,
       });
     } else {
-      // Merge mailgun.org into existing SPF
-      const merged = existing.content.replace(/[~-]all$/, 'include:mailgun.org ~all');
+      // Merge mailgun.org into existing SPF, preserving the all qualifier
+      let merged = existing.content;
+      const allMatch = merged.match(/([~-]all)$/);
+      const allQualifier = allMatch ? allMatch[1] : '-all';
+
+      // Remove the all qualifier, add include, then add back the qualifier
+      merged = merged.replace(/[~-]all$/, '').trim();
+      merged = `${merged} include:mailgun.org ${allQualifier}`;
 
       changes.push({
         type: 'update',
@@ -476,49 +533,96 @@ async function setupDMARC(changes: Change[], dryRun: boolean): Promise<void> {
   }
 }
 
-async function setupDKIM(changes: Change[], dryRun: boolean, dkimRecords: MailgunDKIMRecord[]): Promise<void> {
-  for (const dkim of dkimRecords) {
-    const fullName = dkim.name.includes(ENV.ROOT_DOMAIN)
-      ? dkim.name
-      : `${dkim.name}.${ENV.ROOT_DOMAIN}`;
+async function setupDKIMTxt(changes: Change[], dryRun: boolean): Promise<void> {
+  if (!FLAGS.dkimTxt) {
+    log('  ⚠ No --dkim-txt value provided, skipping DKIM TXT record', 'yellow');
+    return;
+  }
 
-    const existingRecords = await Cloudflare.listDNSRecords('CNAME', fullName);
+  const dkimName = `mx._domainkey.${ENV.ROOT_DOMAIN}`;
+  const dkimContent = FLAGS.dkimTxt;
 
-    if (existingRecords.length === 0) {
+  const existingRecords = await Cloudflare.listDNSRecords('TXT', dkimName);
+
+  if (existingRecords.length === 0) {
+    changes.push({
+      type: 'create',
+      category: 'DNS',
+      description: `DKIM TXT record at ${dkimName}`,
+    });
+
+    if (!dryRun) {
+      await Cloudflare.createDNSRecord({
+        type: 'TXT',
+        name: dkimName,
+        content: dkimContent,
+        ttl: 3600,
+        proxied: false,
+      });
+    }
+  } else {
+    const existing = existingRecords[0];
+
+    if (existing.content === dkimContent) {
       changes.push({
-        type: 'create',
+        type: 'skip',
         category: 'DNS',
-        description: `DKIM CNAME ${fullName} → ${dkim.content}`,
+        description: `DKIM TXT record at ${dkimName} already correct`,
+      });
+    } else {
+      changes.push({
+        type: 'update',
+        category: 'DNS',
+        description: `DKIM TXT record at ${dkimName}`,
       });
 
-      if (!dryRun) {
-        await Cloudflare.createDNSRecord({
-          type: 'CNAME',
-          name: fullName,
-          content: dkim.content,
-          ttl: 3600,
-          proxied: false,
-        });
+      if (!dryRun && existing.id) {
+        await Cloudflare.updateDNSRecord(existing.id, { content: dkimContent });
       }
+    }
+  }
+}
+
+async function setupTrackingCNAME(changes: Change[], dryRun: boolean): Promise<void> {
+  const trackingName = `email.${ENV.ROOT_DOMAIN}`;
+  const trackingContent = 'mailgun.org';
+
+  const existingRecords = await Cloudflare.listDNSRecords('CNAME', trackingName);
+
+  if (existingRecords.length === 0) {
+    changes.push({
+      type: 'create',
+      category: 'DNS',
+      description: `Tracking CNAME ${trackingName} → ${trackingContent}`,
+    });
+
+    if (!dryRun) {
+      await Cloudflare.createDNSRecord({
+        type: 'CNAME',
+        name: trackingName,
+        content: trackingContent,
+        ttl: 3600,
+        proxied: false,
+      });
+    }
+  } else {
+    const existing = existingRecords[0];
+
+    if (existing.content === trackingContent) {
+      changes.push({
+        type: 'skip',
+        category: 'DNS',
+        description: `Tracking CNAME ${trackingName} already correct`,
+      });
     } else {
-      const existing = existingRecords[0];
+      changes.push({
+        type: 'update',
+        category: 'DNS',
+        description: `Tracking CNAME ${trackingName} → ${trackingContent}`,
+      });
 
-      if (existing.content === dkim.content) {
-        changes.push({
-          type: 'skip',
-          category: 'DNS',
-          description: `DKIM CNAME ${fullName} already correct`,
-        });
-      } else {
-        changes.push({
-          type: 'update',
-          category: 'DNS',
-          description: `DKIM CNAME ${fullName} → ${dkim.content}`,
-        });
-
-        if (!dryRun && existing.id) {
-          await Cloudflare.updateDNSRecord(existing.id, { content: dkim.content });
-        }
+      if (!dryRun && existing.id) {
+        await Cloudflare.updateDNSRecord(existing.id, { content: trackingContent });
       }
     }
   }
@@ -616,44 +720,6 @@ async function setupEmailRouting(changes: Change[], dryRun: boolean, routes: Ema
 // ============================================================================
 // MAILGUN OPERATIONS
 // ============================================================================
-
-async function verifyMailgunDomain(changes: Change[]): Promise<MailgunDKIMRecord[]> {
-  try {
-    const domain = await Mailgun.getDomain();
-
-    changes.push({
-      type: 'skip',
-      category: 'Mailgun',
-      description: `Domain ${ENV.MG_SENDING_DOMAIN} verified`,
-    });
-
-    // Try to extract DKIM records from API response
-    const dkimRecords: MailgunDKIMRecord[] = [];
-
-    if (domain.sending_dns_records) {
-      for (const record of domain.sending_dns_records) {
-        if (record.record_type === 'CNAME' && record.name?.includes('domainkey')) {
-          dkimRecords.push({
-            name: record.name,
-            content: record.value,
-          });
-        }
-      }
-    }
-
-    // Fallback to hardcoded values if API doesn't return them
-    if (dkimRecords.length === 0) {
-      log('  ⚠ Could not fetch DKIM records from Mailgun API, using fallback values', 'yellow');
-      return DKIM_CNAME_FALLBACKS;
-    }
-
-    return dkimRecords;
-  } catch (error) {
-    log(`  ❌ Mailgun domain ${ENV.MG_SENDING_DOMAIN} not found or API error`, 'red');
-    log(`  Please create the domain in Mailgun first: ${ENV.MG_BASE}/app/sending/domains/new`, 'yellow');
-    throw error;
-  }
-}
 
 async function ensureSMTPCredential(changes: Change[], dryRun: boolean): Promise<{ username: string; password: string } | null> {
   try {
@@ -763,25 +829,21 @@ async function main() {
     log('🔍 Analyzing current configuration...', 'cyan');
     log('');
 
-    // 1. Verify Mailgun domain and get DKIM records
-    log('1️⃣  Mailgun Domain Verification', 'bright');
-    const dkimRecords = await verifyMailgunDomain(changes);
-    log('');
-
-    // 2. Setup DNS records
-    log('2️⃣  DNS Records', 'bright');
+    // 1. Setup DNS records
+    log('1️⃣  DNS Records', 'bright');
     await setupSPF(changes, dryRun);
     await setupDMARC(changes, dryRun);
-    await setupDKIM(changes, dryRun, dkimRecords);
+    await setupDKIMTxt(changes, dryRun);
+    await setupTrackingCNAME(changes, dryRun);
     log('');
 
-    // 3. Setup Email Routing
-    log('3️⃣  Email Routing', 'bright');
+    // 2. Setup Email Routing
+    log('2️⃣  Email Routing', 'bright');
     await setupEmailRouting(changes, dryRun, routes);
     log('');
 
-    // 4. Ensure SMTP credentials
-    log('4️⃣  SMTP Credentials', 'bright');
+    // 3. Ensure SMTP credentials
+    log('3️⃣  SMTP Credentials', 'bright');
     const smtpCreds = await ensureSMTPCredential(changes, dryRun);
     log('');
 
@@ -815,15 +877,26 @@ async function main() {
 
         // Re-run with dryRun=false
         const finalChanges: Change[] = [];
-        await verifyMailgunDomain(finalChanges);
         await setupSPF(finalChanges, false);
         await setupDMARC(finalChanges, false);
-        await setupDKIM(finalChanges, false, dkimRecords);
+        await setupDKIMTxt(finalChanges, false);
+        await setupTrackingCNAME(finalChanges, false);
         await setupEmailRouting(finalChanges, false, routes);
         const finalSmtpCreds = await ensureSMTPCredential(finalChanges, false);
 
         log('✅ All changes applied successfully!', 'green');
         log('');
+
+        // Poll Mailgun for domain verification
+        if (FLAGS.dkimTxt) {
+          log('4️⃣  Mailgun Domain Verification', 'bright');
+          try {
+            await Mailgun.pollDomainVerification();
+          } catch (error) {
+            log(`  ⚠ Could not poll Mailgun verification: ${error}`, 'yellow');
+            log('');
+          }
+        }
 
         // Print SMTP settings if credentials were created
         if (finalSmtpCreds && finalSmtpCreds.password !== '********') {
