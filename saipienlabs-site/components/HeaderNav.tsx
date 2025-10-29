@@ -42,10 +42,10 @@ export default function HeaderNav({ onOpenContact }: HeaderNavProps) {
           <Image
             src="/saipien-labs-logo.png"
             alt="Saipien Labs"
-            width={180}
-            height={40}
+            width={240}
+            height={60}
             priority
-            className="h-8 w-auto"
+            className="h-12 md:h-14 w-auto"
           />
         </Link>
 
