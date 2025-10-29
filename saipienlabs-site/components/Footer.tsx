@@ -18,9 +18,9 @@ export default function Footer() {
           <Image
             src="/saipien-labs-logo.png"
             alt="Saipien Labs"
-            width={350}
-            height={100}
-            className="h-16 md:h-20 w-auto"
+            width={500}
+            height={150}
+            className="w-auto h-[96px] md:h-[120px]"
           />
         </div>
 
